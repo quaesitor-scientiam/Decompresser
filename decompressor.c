@@ -1,3 +1,4 @@
+#include "decompressor.h"
 #include "librom.h"
 #include <stdio.h>
 #include <stdint.h>
