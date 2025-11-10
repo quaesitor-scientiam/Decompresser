@@ -1,6 +1,8 @@
 #ifndef LIB_ROM_H
 #define LIB_ROM_H
 
+#include <stdint.h>
+
 struct librom {
 	char* filename;
 	char* data;

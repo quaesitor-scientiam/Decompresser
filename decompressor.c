@@ -1,7 +1,11 @@
-#include "decompressor.h"
-#include "librom.h"
+
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "decompressor.h"
+#include "librom.h"
 
 
 void decompress(char* rom_path, char* decompressed_path, char* codec) {
@@ -9,20 +13,53 @@ void decompress(char* rom_path, char* decompressed_path, char* codec) {
 	if (rom.size == 0) {
 		return;
 	}
-	//for compression in 0 to rom.size {
-	//	// Decompression logic based on codec
-	//	// This is a placeholder for actual decompression code
+	Result* result = KOMAMI_decompressor(0, &rom ); // Pass address of rom
+
+	//for (int i = 0; i < result->size; i++) {
+	//	printf("%02x ", ((unsigned char*)result->output)[i]);
 	//}
-	KOMAMI_decompressor(0, rom);
+
+	// TODO: Write output to decompressed_path and free output
+	FILE* pFile = fopen(decompressed_path, "wb");
+	if (pFile) {
+		fwrite(&result->output, result->size, 1, pFile);
+		fclose(pFile);
+	}
 }
 
 
-void KOMAMI_decompressor(int offset, struct librom rom) {
-	// Decompression logic for Konami RLE
-	rom.cursor = offset;
-	rom.data += offset;
-	uint8_t byte = read_byte(&rom);
+Result* KOMAMI_decompressor(int offset, struct librom* rom) {
+	rom->cursor = offset;
+	rom->data += offset;
+	
+	// Allocate Result buffer (assume decompressed data won't exceed rom.size * 2)
+	Result *result = malloc(sizeof(Result) * rom->size * 2 * sizeof(uint8_t));
+	if (!result) {
+		printf("Error: Failed to allocate output buffer.\n");
+		return NULL;
+	}
+	
+	result->size = 0;
+	while (1) {
+		uint8_t byte = read_byte(rom);
+		if (byte == 0xFF) {
+			break;
+		}
 
+		if (byte <= 0x80) {
+			uint8_t _readed = read_byte(rom);
+			for (int i = 0; i < byte; i++) {
+				result->output[result->size] = _readed;
+				result->size++;
+			}
+		} else {
+			for (int i = 0; i < (byte - 0x80); i++) {
+				result->output[result->size] = read_byte(rom);
+				result->size++;
+			}
+		}
+	}
+	return result;
 };
 
 uint8_t read_byte(struct librom* rom) {
