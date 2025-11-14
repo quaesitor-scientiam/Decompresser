@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "librom.h"
 
 #ifndef DECOMPRESSOR_H
 #define DECOMPRESSOR_H
@@ -17,8 +18,8 @@ const char COMPRESSIOM_TYPES[] = {
 	'5'  // Custom / Other
 };
 
-Result* KOMAMI_decompressor(int offset, struct librom* rom);
-uint8_t read_byte(struct librom* rom);
+Result* KOMAMI_decompressor(int offset, LIBROM* rom);
+uint8_t read_byte(LIBROM* rom);
 
 #endif
 

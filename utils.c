@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdint.h>
+#include <assert.h>
 #include "utils.h"
 
 
@@ -74,4 +75,22 @@ int fileExists(const char* filename) {
     }
 #endif
     return 0;
+}
+
+const char* compression_name(compressionTypes ctype) {
+    switch (ctype) {
+        CTYPE_ENUM(CTYPE_ENUM_STRING)
+    default: assert(!"Unknown compression type");
+    }
+}
+
+const char* const type_names[] = {
+    #define X(x) [x] = #x,
+        CTYPE_ENUM(X)
+    #undef X
+};
+
+compressionTypes compressionType_from_string(const char* str) {
+    CTYPE_ENUM(CTYPE_ENUM_FROM_STRING)
+        assert(!"Unknown compression type string");
 }

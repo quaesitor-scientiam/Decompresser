@@ -2,12 +2,8 @@
 #include "utils.h"
 #include <stdio.h>
 
-extern struct librom librom;
 
-size_t readAllBytesFromFile(char* filename, char** output, int zeroTerminate);
-int fileExists(const char* filename);
-
-struct librom initialize_rom(char *filename, char endian) {
+LIBROM initialize_rom(char *filename, char endian) {
 	if (fileExists(filename) == 0) {
 		printf("Error: ROM file \"%s\" does not exist.\n", filename);
 		struct librom empty = {0};
@@ -19,7 +15,7 @@ struct librom initialize_rom(char *filename, char endian) {
 		return empty;
 	}
 
-	struct librom result = {0};
+	LIBROM result = {0};
 	result.size = readAllBytesFromFile(filename, &result.data, 0);
 	result.filename = filename;
 	result.endian = endian;

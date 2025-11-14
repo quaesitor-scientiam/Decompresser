@@ -5,11 +5,11 @@
 #include <stdlib.h>
 
 #include "decompressor.h"
-#include "librom.h"
+
 
 
 void decompress(char* rom_path, char* decompressed_path, char* codec) {
-	struct librom rom = initialize_rom(rom_path, 'L');
+	LIBROM rom = initialize_rom(rom_path, 'L');
 	if (rom.size == 0) {
 		return;
 	}
@@ -28,7 +28,7 @@ void decompress(char* rom_path, char* decompressed_path, char* codec) {
 }
 
 
-Result* KOMAMI_decompressor(int offset, struct librom* rom) {
+Result* KOMAMI_decompressor(int offset, LIBROM* rom) {
 	rom->cursor = offset;
 	rom->data += offset;
 	
@@ -62,7 +62,7 @@ Result* KOMAMI_decompressor(int offset, struct librom* rom) {
 	return result;
 };
 
-uint8_t read_byte(struct librom* rom) {
+uint8_t read_byte(LIBROM* rom) {
 	if (rom->cursor >= rom->size) {
 		printf("Error: Attempted to read beyond end of ROM data.\n");
 		return 0;

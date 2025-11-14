@@ -3,17 +3,17 @@
 
 #include <stdint.h>
 
-struct librom {
+typedef struct librom {
 	char* filename;
 	char* data;
 	size_t size;
 	char endian; // 'L' for little-endian, 'B' for big-endian
 	int cursor;
-};
+} LIBROM;
 
 // Global instance of librom
-extern struct librom librom;
+extern struct LIBROM rom;
 
-struct librom initialize_rom(char* filename, char endian);
+LIBROM initialize_rom(char* filename, char endian);
 
 #endif
